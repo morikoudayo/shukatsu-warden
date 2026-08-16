@@ -1,16 +1,16 @@
-import "dotenv/config";
-import { App } from "@slack/bolt";
+import { env } from "./config/env.js";
+import { app } from "./libs/slack.js";
+import { registerSlackHandlers } from "./slack/register.js";
 
-const app = new App({
-  token: process.env.SLACK_BOT_TOKEN,
-  appToken: process.env.SLACK_APP_TOKEN,
-  socketMode: true,
+async function main() {
+  registerSlackHandlers(app);
+
+  await app.start(env.port);
+
+  console.log(`⚡️ Bot started on port ${env.port}`);
+}
+
+main().catch((error: unknown) => {
+  console.error("Failed to start application:", error);
+  process.exit(1);
 });
-
-app.message(async ({ message, say }) => {
-  if ("subtype" in message && message.subtype) return;
-  await say("受け取った");
-});
-
-await app.start();
-console.log("⚡️ Bolt started");
