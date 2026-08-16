@@ -1,0 +1,33 @@
+{
+  "name": "sibaki",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsx watch src/index.ts",
+    "start": "tsx src/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/morikoudayo/sibaki.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/morikoudayo/sibaki/issues"
+  },
+  "homepage": "https://github.com/morikoudayo/sibaki#readme",
+  "dependencies": {
+    "@slack/bolt": "^5.0.0",
+    "@supabase/supabase-js": "^2.112.3",
+    "dotenv": "^17.4.2"
+  },
+  "devDependencies": {
+    "@types/node": "^26.2.0",
+    "tsx": "^4.23.12",
+    "typescript": "^7.0.2"
+  }
+}
