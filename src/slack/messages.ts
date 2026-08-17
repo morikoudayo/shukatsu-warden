@@ -1,5 +1,7 @@
 import type { App } from "@slack/bolt";
 import { env } from "../config/env.js";
+import { createTasksFromMessage, formatTasks } from "../features/tasks/task.service.js"
+import { format } from "node:path";
 
 export function registerMessageHandlers(app: App): void {
   app.message(async ({ message, say, logger }) => {
@@ -12,9 +14,11 @@ export function registerMessageHandlers(app: App): void {
       "Received message in #ai支社",
     );
 
+    const parsed_tasks = await createTasksFromMessage(message.text || "", message.channel, message.ts, message.user)
+    const formatted_tasks = formatTasks(parsed_tasks);
+
     await say({
-      text: "受け取りました",
-      thread_ts: message.ts,
+      text: formatted_tasks,
     });
   });
 }

@@ -4,9 +4,9 @@ import type { ParsedTasks } from "./task.types.js";
 import { taskParserPrompt } from "../../prompts/task-parser.js";
 
 const client = new AzureOpenAI({
-  apiKey: env.azureOpenAi.apiKey,
   endpoint: env.azureOpenAi.endpoint,
   apiVersion: env.azureOpenAi.apiVersion,
+  apiKey: env.azureOpenAi.apiKey
 });
 
 const parsedTasksSchema = {
@@ -54,12 +54,11 @@ const parsedTasksSchema = {
   },
 } as const;
 
-export async function parseTasksFromText(
+export async function parseTasks(
   text: string,
 ): Promise<ParsedTasks> {
   const completion = await client.chat.completions.create({
     model: env.azureOpenAi.taskModelDeployment,
-    temperature: 0,
     messages: [
       {
         role: "system",
