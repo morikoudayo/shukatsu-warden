@@ -31,6 +31,13 @@ export const env = {
     inboxChannelId: required("SLACK_INBOX_CHANNEL_ID"),
   },
 
+  azureOpenAi: {
+    endpoint: required("AZURE_OPENAI_ENDPOINT"),
+    apiKey: required("AZURE_OPENAI_API_KEY"),
+    apiVersion: required("AZURE_OPENAI_API_VERSION"),
+    taskModelDeployment: required("AZURE_OPENAI_TASK_MODEL_DEPLOYMENT"),
+  },
+
   supabase: {
     url: required("SUPABASE_URL"),
     serviceRoleKey: required("SUPABASE_SERVICE_ROLE_KEY"),
