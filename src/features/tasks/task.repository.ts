@@ -12,12 +12,10 @@ export async function insertTasks(
   const { error } = await supabase.from("tasks").insert(
     taskInserts.map((task) => ({
       id: task.id,
-      parent_task_id: task.parentTaskId,
 
-      position: task.position,
+      priority: task.priority,
       title: task.title,
       company_name: task.companyName,
-      annotation: task.annotation,
 
       slack_channel_id: task.slackChannelId,
       slack_message_ts: task.slackMessageTs,

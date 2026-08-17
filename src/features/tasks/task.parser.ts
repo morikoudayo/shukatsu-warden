@@ -23,19 +23,13 @@ const parsedTasksSchema = {
           type: "object",
           additionalProperties: false,
           required: [
-            "position",
-            "parentPosition",
+            "priority",
             "title",
             "companyName",
-            "annotation",
           ],
           properties: {
-            position: {
+            priority: {
               type: "integer",
-              minimum: 0,
-            },
-            parentPosition: {
-              type: ["integer", "null"],
               minimum: 0,
             },
             title: {
@@ -43,9 +37,6 @@ const parsedTasksSchema = {
             },
             companyName: {
               type: ["string", "null"],
-            },
-            annotation: {
-              type: "string",
             },
           },
         },

@@ -1,10 +1,7 @@
 export type ParsedTask = {
-  position: number;
-  parentPosition: number | null;
-
+  priority: number;
   title: string;
   companyName: string | null;
-  annotation: string;
 };
 
 export type ParsedTasks = {
@@ -15,12 +12,10 @@ type TaskStatus = "open" | "done" | "cancelled";
 
 export type Task = {
   id: string;
-  parentTaskId: string | null;
 
-  position: number;
+  priority: number;
   title: string;
   companyName: string | null;
-  annotation: string;
 
   status: TaskStatus;
   completedAt: string | null;
