@@ -14,7 +14,7 @@ export function registerMessageHandlers(app: App): void {
     );
 
     await say({
-      text: "タスク宣言を検知しました。（1分ほどお待ちください）",
+      text: "タスク宣言を検知しました。最大１分ほどお待ちください。",
     });
 
     const parsed_tasks = await createTasksFromMessage(message.text || "", message.channel, message.ts, message.user)
