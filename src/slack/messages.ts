@@ -1,6 +1,8 @@
 import type { App } from "@slack/bolt";
 import { env } from "../config/env.js";
-import { createTasksFromMessage, formatTasks } from "../features/tasks/task.service.js"
+import { parseTasks } from "../features/tasks/task.parser.js";
+import { insertTasks } from "../features/tasks/task.repository.js";
+import { createTaskInserts, formatTasks } from "../features/tasks/task.service.js";
 
 export function registerMessageHandlers(app: App): void {
   app.message(async ({ message, say, logger }) => {
@@ -14,14 +16,26 @@ export function registerMessageHandlers(app: App): void {
     );
 
     await say({
-      text: "タスク宣言を検知しました。最大１分ほどお待ちください。",
+      text: "タスク宣言／追加を検知しました。最大１分ほどお待ちください。",
     });
 
-    const parsed_tasks = await createTasksFromMessage(message.text || "", message.channel, message.ts, message.user)
-    const formatted_tasks = formatTasks(parsed_tasks);
+    const parsedTasks = await parseTasks(message.text || "");
 
-    await say({
-      text: `今日のタスクは以下の通りです。\n${formatted_tasks}`,
-    });
+    const taskInserts = createTaskInserts(
+      parsedTasks,
+      message.channel,
+      message.ts,
+      message.user,
+    );
+
+    await insertTasks(taskInserts);
+
+    const formattedTasks = formatTasks(parsedTasks);
+
+    if (formattedTasks) {
+      await say({
+        text: `タスクを追加しました。\n${formattedTasks}`,
+      });
+    }
   });
 }

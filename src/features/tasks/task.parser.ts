@@ -23,15 +23,10 @@ const parsedTasksSchema = {
           type: "object",
           additionalProperties: false,
           required: [
-            "priority",
             "title",
             "companyName",
           ],
           properties: {
-            priority: {
-              type: "integer",
-              minimum: 0,
-            },
             title: {
               type: "string",
             },

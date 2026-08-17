@@ -13,7 +13,6 @@ export async function insertTasks(
     taskInserts.map((task) => ({
       id: task.id,
 
-      priority: task.priority,
       title: task.title,
       company_name: task.companyName,
 

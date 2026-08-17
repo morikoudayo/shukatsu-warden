@@ -1,5 +1,4 @@
 export type ParsedTask = {
-  priority: number;
   title: string;
   companyName: string | null;
 };
@@ -13,7 +12,6 @@ type TaskStatus = "open" | "done" | "cancelled";
 export type Task = {
   id: string;
 
-  priority: number;
   title: string;
   companyName: string | null;
 
