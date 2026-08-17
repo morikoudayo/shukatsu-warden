@@ -11,14 +11,6 @@ export type ParsedTasks = {
   tasks: ParsedTask[];
 };
 
-export type CreateTasksFromMessageInput = {
-  parsed: ParsedTasks;
-
-  slackChannelId: string;
-  slackMessageTs: string;
-  slackUserId: string;
-};
-
 type TaskStatus = "open" | "done" | "cancelled";
 
 export type Task = {
@@ -40,3 +32,8 @@ export type Task = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type TaskInsert = Omit<
+  Task,
+  "status" | "completedAt" | "createdAt" | "updatedAt"
+>;
