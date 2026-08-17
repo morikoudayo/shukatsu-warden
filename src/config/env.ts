@@ -32,7 +32,7 @@ export const env = {
   },
 
   supabase: {
-    url: process.env.SUPABASE_URL,
-    serviceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
+    url: required("SUPABASE_URL"),
+    serviceRoleKey: required("SUPABASE_SERVICE_ROLE_KEY"),
   },
 } as const;
