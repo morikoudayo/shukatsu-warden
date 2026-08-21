@@ -1,9 +1,9 @@
 import { env } from "./config/env.js";
-import { app } from "./libs/slack.js";
-import { registerSlackHandlers } from "./slack/register.js";
+import { app } from "./slack/app.js";
+import { register as registerMessages } from "./slack/messages/index.js";
 
 async function main() {
-  registerSlackHandlers(app);
+  registerMessages(app);
 
   await app.start(env.port);
 
