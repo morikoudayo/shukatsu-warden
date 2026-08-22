@@ -6,34 +6,37 @@ import { markProcessed } from "./dedup.js";
 import { route } from "./router.js";
 
 export function register(app: App): void {
-  app.message(async ({ message, say, logger }) => {
+  app.message(async ({ message, say, client, logger }) => {
     if ("bot_id" in message) return;
     if ("subtype" in message && message.subtype) return;
     if (message.channel !== env.slack.inboxChannelId) return;
 
-    try {
-      if (!(await markProcessed(message.channel, message.ts))) {
-        logger.info({ channel: message.channel, ts: message.ts }, "Ignoring duplicate message delivery");
-        return;
-      }
+    if (!(await markProcessed(message.channel, message.ts))) {
+      logger.info({ channel: message.channel, ts: message.ts }, "Ignoring duplicate message delivery");
+      return;
+    }
 
-      logger.info(
-        { channel: message.channel, user: message.user, text: message.text },
-        "Received message in #ai支社",
-      );
+    logger.info(
+      { channel: message.channel, user: message.user, text: message.text },
+      "Received message in #ai支社",
+    );
 
-      await say({ text: "内容を確認しています。最大１分ほどお待ちください。" });
+    const channel = message.channel;
+    const timestamp = message.ts;
 
-      await route({
+    await client.reactions.add({ channel, timestamp, name: "eyes" }).catch(() => {});
+
+    await route(
+      {
         text: message.text || "",
-        channelId: message.channel,
-        messageTs: message.ts,
+        channelId: channel,
+        messageTs: timestamp,
         userId: message.user,
         say,
-      });
-    } catch (error) {
-      logger.error(error);
-      await say({ text: "メッセージの処理中にエラーが発生しました。もう一度お試しください。" });
-    }
+      },
+      client,
+      channel,
+      timestamp,
+    );
   });
 }

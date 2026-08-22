@@ -1,37 +1,86 @@
 import { classify } from "./classify/index.js";
+import { handle as handleOther } from "./other/index.js";
 import { handle as addTask } from "./task-add/index.js";
 import { handle as cancelTask } from "./task-cancel/index.js";
 import { handle as completeTask } from "./task-complete/index.js";
 import { handle as listTasks } from "./task-list/index.js";
 import { handle as resetTasks } from "./task-reset/index.js";
 
+import type { App } from "@slack/bolt";
+import type { MessageIntent } from "./classify/types.js";
 import type { MessageContext } from "./types.js";
 
-export async function route(context: MessageContext): Promise<void> {
-  const intent = await classify(context.text);
+type Client = App["client"];
 
-  switch (intent) {
-    case "task_add":
-      await addTask(context);
-      return;
-    case "task_complete":
-      await completeTask(context);
-      return;
-    case "task_cancel":
-      await cancelTask(context);
-      return;
-    case "task_reset":
-      await resetTasks(context);
-      return;
-    case "task_list":
-      await listTasks(context);
-      return;
-    case "other":
-      await context.say({
-        text: "タスクの追加・完了・キャンセル・一覧確認のいずれにも該当しない発言として受け取りました。特に対応は行っていません。",
-      });
-      return;
-    default:
-      throw new Error(`Unhandled message intent: ${String(intent)}`);
+const ACK_REACTION: Record<MessageIntent, string> = {
+  task_add: "saluting_face",
+  task_list: "saluting_face",
+  task_complete: "saluting_face",
+  task_cancel: "saluting_face",
+  task_reset: "saluting_face",
+  other: "pray",
+};
+
+async function swapReaction(
+  client: Client,
+  channel: string,
+  timestamp: string,
+  from: string,
+  to: string,
+): Promise<void> {
+  try {
+    await client.reactions.remove({ channel, timestamp, name: from });
+  } catch {
+    // 既に外れている等は無視
+  }
+
+  try {
+    await client.reactions.add({ channel, timestamp, name: to });
+  } catch {
+    // 既に付いている等は無視
+  }
+}
+
+export async function route(
+  context: MessageContext,
+  client: Client,
+  channel: string,
+  timestamp: string,
+): Promise<void> {
+  try {
+    const intent = await classify(context.text);
+
+    await swapReaction(client, channel, timestamp, "eyes", ACK_REACTION[intent]);
+
+    switch (intent) {
+      case "task_add":
+        await addTask(context);
+        break;
+      case "task_complete":
+        await completeTask(context);
+        break;
+      case "task_cancel":
+        await cancelTask(context);
+        break;
+      case "task_reset":
+        await resetTasks(context);
+        break;
+      case "task_list":
+        await listTasks(context);
+        break;
+      case "other":
+        await handleOther(context);
+        break;
+      default:
+        throw new Error(`Unhandled message intent: ${String(intent)}`);
+    }
+
+    if (intent !== "other") {
+      await swapReaction(client, channel, timestamp, ACK_REACTION[intent], "white_check_mark");
+    }
+  } catch (error) {
+    console.error(error);
+    await swapReaction(client, channel, timestamp, "eyes", "pray");
+    await context.say({ text: "メッセージの処理中にエラーが発生しました。もう一度お試しください。" });
   }
 }
