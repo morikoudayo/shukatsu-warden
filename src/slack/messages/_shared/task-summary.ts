@@ -7,9 +7,9 @@ function format(tasks: TaskListItem[]): string {
   if (tasks.length === 0) return "今日のタスクはありません。";
 
   const list = tasks.map((task) => {
-    if (task.status === "done") return `${task.title} ✅`;
-    if (task.status === "cancelled") return `~${task.title}~`;
-    return task.title;
+    if (task.status === "done") return `・${task.title} ✅`;
+    if (task.status === "cancelled") return `・~${task.title}~`;
+    return `・${task.title}`;
   }).join("\n");
 
   return `今日のタスクです。\n${list}`;
