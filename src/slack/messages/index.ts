@@ -2,6 +2,8 @@ import type { App } from "@slack/bolt";
 
 import { env } from "../../config/env.js";
 
+import { REACTION, addReaction } from "../shared/reactions.js";
+
 import { markProcessed } from "./dedup.js";
 import { route } from "./router.js";
 
@@ -24,7 +26,7 @@ export function register(app: App): void {
     const channel = message.channel;
     const timestamp = message.ts;
 
-    await client.reactions.add({ channel, timestamp, name: "eyes" }).catch(() => {});
+    await addReaction(client, channel, timestamp, REACTION.received);
 
     await route(
       {
