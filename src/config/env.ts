@@ -29,6 +29,7 @@ export const env = {
     botToken: required("SLACK_BOT_TOKEN"),
     appToken: required("SLACK_APP_TOKEN"),
     inboxChannelId: required("SLACK_INBOX_CHANNEL_ID"),
+    alertChannelId: required("SLACK_ALERT_CHANNEL_ID"),
   },
 
   azureOpenAi: {
