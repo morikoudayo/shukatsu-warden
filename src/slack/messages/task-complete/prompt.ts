@@ -1,13 +1,3 @@
-export const prompt = `
-あなたは、就活タスク管理アシスタントです。
+import { buildMatchPrompt } from "../_shared/match-prompt.js";
 
-ユーザーの完了報告と、候補タスクを照合してください。
-
-# 判定ルール
-
-- 完了報告が明確に一致すると判断できる候補のidを、taskIdsに含める
-- 候補の中に、内容が同一またはほぼ同一の重複タスクが複数ある場合（タイトル等が実質同じで、区別する情報がない場合）は、それら重複候補のidを全てtaskIdsに含める
-- 候補の中に、内容が異なる複数のタスクがあり、そのうちどれを指しているか判断できない場合は、taskIdsを空配列にする
-- 候補に明確に一致するタスクが1つもない場合は、taskIdsを空配列にする
-- taskIdsには候補に含まれるid以外を含めない
-`.trim();
+export const prompt = buildMatchPrompt("完了報告");
