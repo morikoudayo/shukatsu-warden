@@ -5,6 +5,8 @@ import { prompt } from "./prompt.js";
 
 import type { MessageIntent } from "./types.js";
 
+const VALID_INTENTS: readonly MessageIntent[] = ["task_add", "task_complete", "task_cancel", "task_reset", "task_list", "other"];
+
 const schema = {
   name: "message_intent",
   strict: true,
@@ -15,7 +17,7 @@ const schema = {
     properties: {
       intent: {
         type: "string",
-        enum: ["task_add", "task_complete", "task_list", "other"],
+        enum: ["task_add", "task_complete", "task_cancel", "task_reset", "task_list", "other"],
       },
     },
   },
@@ -35,9 +37,18 @@ export async function classify(text: string): Promise<MessageIntent> {
 
   if (!content) throw new Error("Azure OpenAI returned an empty response");
 
+  let parsed: unknown;
   try {
-    return (JSON.parse(content) as { intent: MessageIntent }).intent;
+    parsed = JSON.parse(content);
   } catch {
     throw new Error("Azure OpenAI returned invalid message intent JSON");
   }
+
+  const intent = (parsed as { intent?: unknown }).intent;
+
+  if (typeof intent !== "string" || !VALID_INTENTS.includes(intent as MessageIntent)) {
+    throw new Error(`Azure OpenAI returned an unknown message intent: ${JSON.stringify(intent)}`);
+  }
+
+  return intent as MessageIntent;
 }
