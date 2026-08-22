@@ -20,7 +20,7 @@ export async function handle(context: MessageContext): Promise<void> {
 
   if (tasks.length === 0) return;
 
-  const newTasks = tasks.map((task) => `・${task.title}`).join("\n");
+  const newTasks = tasks.map((task) => `・ ${task.title}`).join("\n");
   await context.say({
     text: `新規タスクを追加しました。\n${newTasks}\n\n${await getTaskSummaryText(context)}`,
   });

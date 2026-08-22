@@ -22,7 +22,7 @@ export async function handle(context: MessageContext): Promise<void> {
 
   await context.say({
     text: didComplete
-      ? `完了にしました。\n・${task.title} ✅${remaining > 0 ? `\n(同じ内容の候補が他に${remaining}件あります。続けて同じ発言を送るとさらに完了になります)` : ""}\n\n${await getTaskSummaryText(context)}`
+      ? `完了にしました。\n・ ${task.title} ✅${remaining > 0 ? `\n(同じ内容の候補が他に${remaining}件あります。続けて同じ発言を送るとさらに完了になります)` : ""}\n\n${await getTaskSummaryText(context)}`
       : `対象のタスクはすでに完了済み、または見つかりませんでした。\n\n${await getTaskSummaryText(context)}`,
   });
 }
