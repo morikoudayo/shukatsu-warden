@@ -43,9 +43,5 @@ export async function parse(text: string): Promise<ParsedTask[]> {
 
   if (!content) throw new Error("Azure OpenAI returned an empty response");
 
-  try {
-    return (JSON.parse(content) as { tasks: ParsedTask[] }).tasks;
-  } catch {
-    throw new Error("Azure OpenAI returned invalid task JSON");
-  }
+  return (JSON.parse(content) as { tasks: ParsedTask[] }).tasks;
 }

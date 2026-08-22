@@ -37,12 +37,7 @@ export async function classify(text: string): Promise<MessageIntent> {
 
   if (!content) throw new Error("Azure OpenAI returned an empty response");
 
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(content);
-  } catch {
-    throw new Error("Azure OpenAI returned invalid message intent JSON");
-  }
+  const parsed: unknown = JSON.parse(content);
 
   const intent = (parsed as { intent?: unknown }).intent;
 

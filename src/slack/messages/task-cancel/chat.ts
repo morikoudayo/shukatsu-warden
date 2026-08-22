@@ -38,9 +38,5 @@ export async function match(
 
   if (!content) throw new Error("Azure OpenAI returned an empty response");
 
-  try {
-    return (JSON.parse(content) as { taskIds: string[] }).taskIds;
-  } catch {
-    throw new Error("Azure OpenAI returned invalid task cancellation JSON");
-  }
+  return (JSON.parse(content) as { taskIds: string[] }).taskIds;
 }
