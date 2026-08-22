@@ -44,6 +44,24 @@ export type Database = {
         };
         Relationships: [];
       };
+      processed_messages: {
+        Row: {
+          slack_channel_id: string;
+          slack_message_ts: string;
+          created_at: string;
+        };
+        Insert: {
+          slack_channel_id: string;
+          slack_message_ts: string;
+          created_at?: string;
+        };
+        Update: {
+          slack_channel_id?: string;
+          slack_message_ts?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
