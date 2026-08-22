@@ -3,7 +3,7 @@ import { env } from "../../../config/env.js";
 
 import { prompt } from "./prompt.js";
 
-import type { TaskCandidate } from "./types.js";
+import type { TaskCandidate } from "../_shared/open-tasks.js";
 
 const schema = {
   name: "task_completion_match",
@@ -11,15 +11,20 @@ const schema = {
   schema: {
     type: "object",
     additionalProperties: false,
-    required: ["taskId"],
-    properties: { taskId: { type: ["string", "null"] } },
+    required: ["taskIds"],
+    properties: {
+      taskIds: {
+        type: "array",
+        items: { type: "string" },
+      },
+    },
   },
 } as const;
 
 export async function match(
   text: string,
   candidates: TaskCandidate[],
-): Promise<string | null> {
+): Promise<string[]> {
   const completion = await chatClient.chat.completions.create({
     model: env.azureOpenAi.taskModelDeployment,
     messages: [
@@ -34,7 +39,7 @@ export async function match(
   if (!content) throw new Error("Azure OpenAI returned an empty response");
 
   try {
-    return (JSON.parse(content) as { taskId: string | null }).taskId;
+    return (JSON.parse(content) as { taskIds: string[] }).taskIds;
   } catch {
     throw new Error("Azure OpenAI returned invalid task completion JSON");
   }

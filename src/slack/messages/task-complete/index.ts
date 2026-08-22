@@ -1,12 +1,13 @@
 import { match } from "./chat.js";
-import { complete, getOpenTasks } from "./query.js";
+import { complete } from "./query.js";
+import { getOpenTasks } from "../_shared/open-tasks.js";
 
 import type { MessageContext } from "../types.js";
 
 export async function handle(context: MessageContext): Promise<void> {
   const candidates = await getOpenTasks(context.channelId, context.userId);
-  const taskId = await match(context.text, candidates);
-  const task = candidates.find((candidate) => candidate.id === taskId);
+  const matchedIds = await match(context.text, candidates);
+  const task = candidates.find((candidate) => candidate.id === matchedIds[0]);
 
   if (!task) {
     await context.say({
@@ -16,9 +17,11 @@ export async function handle(context: MessageContext): Promise<void> {
   }
 
   const didComplete = await complete(task.id, context.channelId, context.userId);
+  const remaining = matchedIds.length - 1;
+
   await context.say({
     text: didComplete
-      ? `完了にしました。\n• ${task.title}`
+      ? `完了にしました。\n${task.title} ✅${remaining > 0 ? `\n(同じ内容の候補が他に${remaining}件あります。続けて同じ発言を送るとさらに完了になります)` : ""}`
       : "対象のタスクはすでに完了済み、または見つかりませんでした。",
   });
 }
